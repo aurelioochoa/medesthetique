@@ -1,0 +1,148 @@
+/* Medesthetique — capa de glassmorphism para todo el diseño.
+   Un fondo ambiental de luz (orbes en azul polvo, nude y azul marino) y, encima, superficies de vidrio
+   esmerilado: translúcidas, con desenfoque, borde de luz y brillo interior. Se carga al final en las tres páginas. */
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.44);
+  --glass-bg-strong: rgba(255, 255, 255, 0.68);
+  --glass-stroke: rgba(255, 255, 255, 0.72);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --glass-blur: blur(22px) saturate(1.6);
+  --glass-shadow: 0 24px 60px -34px rgba(24, 47, 87, 0.42);
+  --orb-1: rgba(128, 190, 214, 0.75);
+  --orb-2: rgba(232, 182, 162, 0.7);
+  --orb-3: rgba(150, 176, 232, 0.62);
+  --orb-4: rgba(39, 71, 125, 0.22);
+  /* Las superficies base pasan a ser translúcidas */
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-a: rgba(255, 255, 255, 0.38);
+  --pearl: rgba(255, 255, 255, 0.5);
+  --glass: rgba(255, 255, 255, 0.6);
+  --header-glass: rgba(247, 242, 238, 0.55);
+}
+
+:root[data-theme-resolved='dark'] {
+  --glass-bg: rgba(32, 46, 74, 0.36);
+  --glass-bg-strong: rgba(17, 26, 43, 0.72);
+  --glass-stroke: rgba(255, 255, 255, 0.11);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 26px 60px -30px rgba(0, 0, 0, 0.85);
+  --orb-1: rgba(44, 122, 168, 0.7);
+  --orb-2: rgba(132, 70, 100, 0.48);
+  --orb-3: rgba(52, 82, 168, 0.62);
+  --orb-4: rgba(155, 201, 216, 0.1);
+  --surface: rgba(255, 255, 255, 0.07);
+  --surface-a: rgba(255, 255, 255, 0.05);
+  --pearl: rgba(22, 32, 52, 0.5);
+  --glass: rgba(20, 30, 50, 0.6);
+  --header-glass: rgba(13, 20, 34, 0.5);
+}
+
+/* ---------- Fondo ambiental ---------- */
+html { background: var(--porcelain); }
+body, .admin, .mapa-page { background: transparent; }
+body::before {
+  content: ''; position: fixed; inset: -25vmax; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(34vmax 34vmax at 18% 22%, var(--orb-1), transparent 70%),
+    radial-gradient(30vmax 30vmax at 84% 30%, var(--orb-3), transparent 70%),
+    radial-gradient(38vmax 38vmax at 62% 88%, var(--orb-2), transparent 70%),
+    radial-gradient(26vmax 26vmax at 30% 75%, var(--orb-4), transparent 70%);
+  animation: orbs 46s ease-in-out infinite alternate;
+}
+@keyframes orbs { to { transform: translate3d(5vmax, -4vmax, 0) rotate(10deg) scale(1.06); } }
+
+/* Las secciones dejan ver el fondo */
+.hero { background: radial-gradient(60% 70% at 78% 40%, var(--glow-a), transparent 70%), transparent; }
+.section-soft, .section-etapas, .section-gift, .story { background: transparent; }
+.mapa { background: transparent; }
+.ribbon { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-color: var(--glass-stroke); }
+
+/* ---------- Vidrio: paneles grandes (con desenfoque) ---------- */
+.treat, .doc, .sede, .quote, .faq details, .etapa-card, .tech-card, .pillars li,
+.hotspot span, .story-compare, .sculpt-switch, .mapa-sculpt, .mapa-tools .seg, .sim, .mapa-dot span,
+.panel-block, .panel-card, .kpi, .agenda, .follow-card, .login-card, .gift-form, .bk-summary, .bk-plan {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--glass-shine), var(--glass-shadow);
+}
+.gift-form { padding: clamp(22px, 3vw, 34px); border-radius: var(--radius); }
+.table-card { background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border-color: var(--glass-stroke); box-shadow: var(--glass-shine), var(--glass-shadow); }
+.treat:hover, .doc:hover, .sede:hover, .quote:hover { border-color: var(--glass-stroke); box-shadow: var(--glass-shine), 0 30px 70px -30px rgba(24, 47, 87, 0.5); }
+
+/* Vidrio más denso para lo que flota sobre todo */
+.site-header.is-scrolled, .drawer, .modal-card, .mapa-panel, .nav.is-open, .toast {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shine), var(--glass-shadow);
+}
+.drawer { border-left: 1px solid var(--glass-stroke); }
+.drawer-foot { background: transparent; border-top-color: var(--glass-stroke); }
+.drawer-head { border-bottom-color: var(--glass-stroke); }
+.modal-card { border: 1px solid var(--glass-stroke); }
+.mapa-panel { border-left: 1px solid var(--glass-stroke); }
+.toast { color: var(--ink); border: 1px solid var(--glass-stroke); }
+@media (max-width: 1080px) { .nav.is-open { border-top: 1px solid var(--glass-stroke); } }
+
+/* ---------- Vidrio: controles (sin desenfoque propio, ya flotan sobre vidrio) ---------- */
+.chip, .tabs button, .seg, .icon-btn, .btn-ghost, .gift-amount, .etapa-list li, .zone-chip, .concern, .plan-items li,
+.bk-opt, .bk-sede, .bk-doc, .bk-day, .bk-slot, .row-btn, .tech-card .tag, .sede-edit, .reg-form, .zone-pick span, .sculpt-pick span {
+  background: var(--glass-bg);
+  border-color: var(--glass-stroke);
+  box-shadow: var(--glass-shine);
+}
+.icon-btn, .btn-ghost, .tabs button, .seg { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.input, .select, .textarea, .search input { background: var(--surface); border-color: var(--glass-stroke); box-shadow: var(--glass-shine); }
+:root[data-theme-resolved='dark'] .input, :root[data-theme-resolved='dark'] .select, :root[data-theme-resolved='dark'] .textarea, :root[data-theme-resolved='dark'] .search input { border-color: var(--line-strong); }
+.input:focus, .select:focus, .textarea:focus, .search input:focus { border-color: var(--sea); }
+
+/* Botón principal: acento sólido con un brillo de vidrio */
+.btn-primary { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 14px 30px -14px rgba(39, 71, 125, 0.6); }
+.btn-wa { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+
+/* ---------- Bloques de marca: vidrio oscuro tintado ---------- */
+.section-navy {
+  background: radial-gradient(70% 80% at 85% 10%, rgba(79, 151, 179, 0.35), transparent 60%), rgba(20, 35, 63, 0.86);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+}
+.pillars li { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.12); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+.closing { background: radial-gradient(60% 90% at 80% 0%, rgba(155, 201, 216, 0.45), transparent 60%), linear-gradient(140deg, rgba(39, 71, 125, 0.9), rgba(20, 35, 63, 0.92)); }
+.site-footer { background: rgba(20, 35, 63, 0.94); }
+:root[data-theme-resolved='dark'] .section-navy, :root[data-theme-resolved='dark'] .site-footer { background-color: rgba(8, 13, 24, 0.7); }
+.promo { background: rgba(20, 35, 63, 0.82); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+
+/* ---------- Panel de la clínica ---------- */
+.side { background: rgba(20, 35, 63, 0.8); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border-right: 1px solid rgba(255, 255, 255, 0.08); }
+:root[data-theme-resolved='dark'] .side { background: rgba(6, 10, 18, 0.55); }
+.top { background: var(--header-glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border-bottom-color: var(--glass-stroke); }
+.agenda-head, .table th { background: rgba(255, 255, 255, 0.2); }
+:root[data-theme-resolved='dark'] .agenda-head, :root[data-theme-resolved='dark'] .table th { background: rgba(255, 255, 255, 0.03); }
+.agenda-head { -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+.table tbody tr[data-paciente]:hover { background: var(--surface-a); }
+.login { background: radial-gradient(70% 80% at 80% 10%, rgba(79, 151, 179, 0.5), transparent 60%), radial-gradient(60% 60% at 10% 90%, rgba(197, 143, 124, 0.35), transparent 60%), linear-gradient(140deg, var(--brand-navy), #14233f); }
+.login-card { background: rgba(255, 255, 255, 0.16); color: #fff; border-color: rgba(255, 255, 255, 0.25); }
+.login-card h1 { color: #fff; }
+.login-card .note, .login-card .field > span { color: rgba(255, 255, 255, 0.75); }
+.login-card .wordmark { color: #fff; }
+.login-card .input { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.28); }
+.login-card .btn-primary { background: #fff; color: var(--brand-navy); }
+
+/* Sin soporte de desenfoque: vidrio más opaco para que el texto se lea */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass-bg: rgba(255, 255, 255, 0.82); --glass-bg-strong: rgba(255, 255, 255, 0.94); }
+  :root[data-theme-resolved='dark'] { --glass-bg: rgba(24, 34, 54, 0.9); --glass-bg-strong: rgba(17, 26, 43, 0.96); }
+}
+@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
+
+/* Variantes con color propio que el vidrio no debe pisar */
+.chip.chip-navy { background: var(--navy); border-color: transparent; color: var(--on-accent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+.chip.chip-powder { background: var(--powder-100); border-color: transparent; }
+.hero::after { display: none; }
+
+.tabs button[aria-selected='true'] span { background: rgba(13, 20, 34, 0.14); color: var(--on-accent); }
+:root:not([data-theme-resolved='dark']) .tabs button[aria-selected='true'] span { background: rgba(255, 255, 255, 0.2); }
+.mapa-disclaimer { left: 50%; right: auto; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); padding: 6px 14px; border-radius: 14px; background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-stroke); }
+.story-disclaimer { left: 50%; right: auto; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); padding: 4px 12px; border-radius: 999px; background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }

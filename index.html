@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    // Tema antes de pintar: lo elegido en este navegador, o el del sistema.
+    (function () { var t = 'auto'; try { t = localStorage.getItem('med.theme') || 'auto'; } catch (e) {}
+      var d = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = t; document.documentElement.dataset.themeResolved = d ? 'dark' : 'light'; })();
+  </script>
+  <title>Medesthetique · Medicina estética en Guayaquil y Samborondón</title>
+  <meta name="description" content="Centro médico estético en Samborondón y Ceibos. Toxina botulínica, ácido hialurónico, bioestimuladores, Liftera, Ultraclear y más, siempre con valoración médica. Agenda tu cita en línea.">
+  <meta name="theme-color" content="#f7f2ee">
+  <meta property="og:title" content="Medesthetique · Que te vean increíble, no diferente">
+  <meta property="og:description" content="Medicina estética con criterio médico. Explora tu rostro en 3D y agenda tu valoración.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=Quicksand:wght@400;600&display=swap">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/glass.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js" } }</script>
+</head>
+<body>
+  <a class="sr-only" href="#tratamientos">Saltar a los tratamientos</a>
+
+  <div class="promo" id="promo" hidden>
+    <div class="wrap promo-inner">
+      <span class="promo-dot" aria-hidden="true"></span>
+      <p><b id="promo-title"></b> <span id="promo-text"></span></p>
+      <a class="promo-link" id="promo-link" href="#regalo"></a>
+      <button class="promo-close" id="promo-close" aria-label="Cerrar aviso">×</button>
+    </div>
+  </div>
+
+  <header class="site-header" id="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="index.html" aria-label="Medesthetique, inicio"><b>Med<i>•</i>Esthetique</b><small>CENTRO MÉDICO ESTÉTICO</small></a>
+      <nav class="nav" id="nav" aria-label="Principal">
+        <a href="#tratamientos">Tratamientos</a>
+        <a href="mapa.html">Mapa facial 3D</a>
+        <a href="#tecnologia">Tecnología</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#sedes">Sedes</a>
+        <a class="btn btn-primary nav-cta" href="#agendar" data-book>Agenda tu valoración</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn theme-btn" type="button" data-theme-toggle aria-label="Cambiar a tema oscuro" aria-pressed="false">
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg>
+        </button>
+        <a class="icon-btn" data-wa href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 20.4l1.3-4.3a8.4 8.4 0 1 1 3.2 3.1z"/><path d="M9.2 8.2c-.6 2.6 3 6.3 6.4 6.5l1.1-1.5-2-1.3-1 .8c-.9-.5-1.6-1.2-2.1-2.1l.8-1L11.1 7.7z" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="btn btn-primary btn-sm header-cta" href="#agendar" data-book>Agenda tu valoración</a>
+        <button class="icon-btn menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Portada con la escultura en 3D -->
+    <section class="hero" id="inicio">
+      <div class="hero-stage" aria-hidden="true">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hotspots" id="hero-hotspots"></div>
+      </div>
+      <div class="seg sculpt-switch" id="sculpt-switch" role="group" aria-label="Escultura"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Medicina estética con criterio médico</p>
+          <h1 class="display hero-title">
+            <span class="line"><span>Que te vean</span></span>
+            <span class="line"><span><em>increíble,</em></span></span>
+            <span class="line"><span>no diferente.</span></span>
+          </h1>
+          <p class="lead hero-lead">Desde <span data-years>hace 12 años</span> cuidamos rostros en Guayaquil con valoración médica, productos originales y tecnología que no encuentras en otra clínica del país.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#agendar" data-book>
+              Agenda tu valoración
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="mapa.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>
+              Explora tu rostro en 3D
+            </a>
+          </div>
+          <dl class="hero-facts">
+            <div><dt class="num" data-years-n>12</dt><dd>años de medicina estética</dd></div>
+            <div><dt class="num" data-sedes-n>2</dt><dd>sedes: <span data-sedes-list>Samborondón y Ceibos</span></dd></div>
+            <div><dt class="num">73,4 mil</dt><dd>personas nos siguen en Instagram</dd></div>
+          </dl>
+        </div>
+      </div>
+      <a class="hero-scroll" href="#zona-por-zona"><span>Tu rostro, zona por zona</span><i aria-hidden="true"></i></a>
+    </section>
+
+    <!-- Franja de confianza -->
+    <div class="ribbon" aria-label="Por qué Medesthetique">
+      <div class="ribbon-track" id="ribbon">
+        <span>Valoración médica antes de todo</span><span>Productos originales con respaldo</span><span>Permiso de funcionamiento ACESS</span><span>Ultraclear: únicos en Ecuador</span><span>Resultados naturales</span><span>Quiet Beauty</span>
+      </div>
+    </div>
+
+    <!-- Historia con scroll: la cámara recorre el rostro -->
+    <section class="story" id="zona-por-zona" aria-label="Tu rostro, zona por zona">
+      <div class="story-sticky">
+        <div class="story-stage" aria-hidden="true">
+          <canvas id="story-canvas"></canvas>
+          <div class="story-compare">
+            <span>Antes</span><i><b id="story-bar"></b></i><span>Después</span>
+          </div>
+          <p class="story-disclaimer">Simulación ilustrativa. Cada resultado depende de tu valoración.</p>
+        </div>
+        <div class="story-copy">
+          <p class="eyebrow">Tu rostro, zona por zona</p>
+          <div class="story-steps" id="story-steps"></div>
+          <div class="story-dots" id="story-dots" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tratamientos -->
+    <section class="section" id="tratamientos">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Tratamientos</p>
+          <h2 class="display">Un plan para ti, <em>no una promoción</em></h2>
+          <p class="lead">Facial, corporal, tecnología, medicina funcional y rejuvenecimiento íntimo. Todo empieza con una valoración: así pagas por lo que de verdad te ayuda.</p>
+        </header>
+        <div class="catalog-bar" data-reveal>
+          <div class="tabs" id="cat-tabs" role="tablist" aria-label="Categorías"></div>
+          <label class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
+            <input id="cat-search" type="search" placeholder="Buscar: botox, manchas, papada…" aria-label="Buscar tratamiento">
+          </label>
+        </div>
+        <div class="grid-treat" id="treatments"></div>
+        <p class="note catalog-note">Precios de referencia publicados por Medesthetique. El valor final, la dosis y el número de sesiones se definen en tu valoración.</p>
+      </div>
+    </section>
+
+    <!-- Tu piel por etapas -->
+    <section class="section section-etapas" id="etapas">
+      <div class="wrap etapas">
+        <div class="etapas-copy" data-reveal>
+          <p class="eyebrow">Tu piel cambia con los años</p>
+          <h2 class="display">¿Tu forma de cuidarla <em>también?</em></h2>
+          <p class="lead">Tu piel pierde alrededor de 1% de colágeno cada año. Elige tu etapa y mira por dónde empezar. Tu edad no lo dice todo: en la valoración armamos tu protocolo.</p>
+          <div class="seg etapas-seg" id="etapas-seg" role="tablist" aria-label="Etapa"></div>
+        </div>
+        <div class="etapa-card" id="etapa-card" data-reveal></div>
+      </div>
+    </section>
+
+    <!-- Tecnología -->
+    <section class="section section-tech" id="tecnologia">
+      <div class="wrap">
+        <header class="section-head section-head-row" data-reveal>
+          <div>
+            <p class="eyebrow">Tecnología</p>
+            <h2 class="display">Lo más avanzado, <em>bien aplicado</em></h2>
+          </div>
+          <p class="lead">Un equipo no hace el resultado: lo hacen la técnica, el tiempo y la energía bien aplicada. Estos son los que usamos.</p>
+        </header>
+      </div>
+      <div class="tech-rail" id="tech-rail" tabindex="0" aria-label="Equipos de la clínica"></div>
+      <div class="wrap tech-nav">
+        <button class="icon-btn" data-rail="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="icon-btn" data-rail="1" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </section>
+
+    <!-- Precio o seguridad -->
+    <section class="section section-navy" id="seguridad">
+      <div class="wrap manifesto">
+        <div data-reveal>
+          <p class="eyebrow">¿Precio o seguridad?</p>
+          <h2 class="display">Tu piel <em>no está en oferta.</em></h2>
+          <p class="lead">“Precio” es el mensaje que más recibimos. Pocas veces nos preguntan quién te va a tratar, con qué productos y con qué criterio. Esto es lo que respondemos.</p>
+        </div>
+        <ol class="pillars">
+          <li data-reveal style="--i:0"><span class="num">01</span><h3>Valoración médica antes de todo</h3><p>Evaluar, indicar y tratar. Ningún protocolo empieza sin conocer tu piel, tu estructura y tus antecedentes.</p></li>
+          <li data-reveal style="--i:1"><span class="num">02</span><h3>Productos originales con respaldo</h3><p>Así como hay carteras falsas, hay productos falsificados. Solo usamos productos con registro y trazabilidad.</p></li>
+          <li data-reveal style="--i:2"><span class="num">03</span><h3>Un establecimiento con permisos</h3><p>Centro médico con permiso de funcionamiento de la ACESS. Tu salud no es un experimento.</p></li>
+          <li data-reveal style="--i:3"><span class="num">04</span><h3>Médicos que saben decir que no</h3><p>“No eres candidata”, “no necesitas más relleno”. Un buen médico no hace todo lo que le piden.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Equipo -->
+    <section class="section" id="equipo">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Equipo médico</p>
+          <h2 class="display">Manos expertas, <em>resultados que no se notan</em></h2>
+        </header>
+        <div class="grid-team" id="team"></div>
+      </div>
+    </section>
+
+    <!-- Testimonios y mitos -->
+    <section class="section section-soft" id="testimonios">
+      <div class="wrap two-col">
+        <div>
+          <header class="section-head" data-reveal>
+            <p class="eyebrow">Lo cuentan ellos</p>
+            <h2 class="display">Nos eligen <em>por cómo se ven después</em></h2>
+          </header>
+          <div class="quotes" id="quotes"></div>
+        </div>
+        <div id="mitos">
+          <header class="section-head" data-reveal>
+            <p class="eyebrow">Mitos y verdades</p>
+            <h2 class="display">Preguntas <em>de consulta</em></h2>
+          </header>
+          <div class="faq" id="faq" data-reveal></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gift card -->
+    <section class="section section-gift" id="regalo">
+      <div class="wrap gift">
+        <div class="gift-preview" data-reveal>
+          <div class="giftcard" id="giftcard" aria-hidden="true">
+            <div class="giftcard-face">
+              <span class="wordmark is-light"><b>Med<i>•</i>Esthetique</b><small>CENTRO MÉDICO ESTÉTICO</small></span>
+              <div class="giftcard-amount" id="gc-amount">$150</div>
+              <div class="giftcard-what" id="gc-what">Para el tratamiento que elija</div>
+              <div class="giftcard-names"><span>Para <b id="gc-para">ti</b></span><span>De <b id="gc-de">alguien que te quiere</b></span></div>
+            </div>
+          </div>
+          <p class="gift-msg" id="gc-msg"></p>
+        </div>
+        <form class="gift-form" id="gift-form" data-reveal>
+          <p class="eyebrow">Regala Medesthetique</p>
+          <h2 class="display">Un regalo que <em>se nota</em></h2>
+          <p class="lead">Elige un monto o un tratamiento. Te enviamos la gift card por WhatsApp o en sobre a la clínica.</p>
+          <div class="seg gift-seg" role="group" aria-label="Tipo de gift card">
+            <button type="button" aria-pressed="true" data-gtype="monto">Por monto</button>
+            <button type="button" aria-pressed="false" data-gtype="tratamiento">Por tratamiento</button>
+          </div>
+          <div class="gift-amounts" id="gift-amounts"></div>
+          <label class="field" id="gift-treat-field" hidden><span>Tratamiento</span><select class="select" id="gift-treat"></select></label>
+          <div class="form-grid">
+            <label class="field"><span>Para</span><input class="input" name="para" maxlength="28" placeholder="Nombre de quien recibe" required></label>
+            <label class="field"><span>De</span><input class="input" name="de" maxlength="28" placeholder="Tu nombre" required></label>
+            <label class="field full"><span>Mensaje</span><input class="input" name="mensaje" maxlength="90" placeholder="Para que te consientas este diciembre"></label>
+            <label class="field full"><span>Tu WhatsApp</span><input class="input" name="telefono" inputmode="tel" placeholder="09…" required></label>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Pedir mi gift card</button>
+          <p class="note">La pagas por transferencia o en la clínica. Te confirmamos por WhatsApp.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Sedes -->
+    <section class="section" id="sedes">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Sedes</p>
+          <h2 class="display">Te esperamos <em>cerca de ti</em></h2>
+        </header>
+        <div class="grid-sedes" id="sedes-grid"></div>
+      </div>
+    </section>
+
+    <!-- Cierre -->
+    <section class="closing" id="agendar">
+      <div class="wrap closing-inner" data-reveal>
+        <h2 class="display">Tu mejor versión empieza con <em>una valoración.</em></h2>
+        <div class="closing-cta">
+          <button class="btn btn-light" data-book>Agenda en línea</button>
+          <a class="btn btn-wa" data-wa href="#" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <span class="wordmark is-light"><b>Med<i>•</i>Esthetique</b><small>CENTRO MÉDICO ESTÉTICO</small></span>
+        <p class="footer-claim">Salud · Armonía · Belleza</p>
+      </div>
+      <nav aria-label="Sitio">
+        <a href="#tratamientos">Tratamientos</a>
+        <a href="mapa.html">Mapa facial 3D</a>
+        <a href="#regalo">Gift cards</a>
+        <a href="#mitos">Mitos y verdades</a>
+      </nav>
+      <nav aria-label="Contacto">
+        <a data-wa href="#" target="_blank" rel="noopener">WhatsApp <span data-setting="whatsappDisplay"></span></a>
+        <a data-mail href="#"><span data-setting="email"></span></a>
+        <a data-ig href="#" target="_blank" rel="noopener">Instagram</a>
+        <a data-tt href="#" target="_blank" rel="noopener">TikTok</a>
+      </nav>
+      <div class="footer-hours">
+        <b>Horario</b>
+        <p>Lunes a viernes · 9h00 a 20h00<br>Sábados · 9h00 a 14h00</p>
+      </div>
+    </div>
+    <div class="wrap footer-legal">
+      <span class="demo-badge">Maqueta</span>
+      <span>Demostración funcional sin backend: las citas se guardan solo en este navegador.</span>
+      <a href="admin.html">Panel de la clínica</a>
+      <p class="credits" id="credits"></p>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/site.js"></script>
+</body>
+</html>

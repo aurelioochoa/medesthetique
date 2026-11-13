@@ -1,0 +1,97 @@
+/* Medesthetique — mapa facial 3D */
+
+.mapa-page { background: var(--porcelain); }
+.mapa {
+  display: grid; grid-template-columns: minmax(0, 1fr) 420px; height: 100dvh; padding-top: var(--header-h);
+  background: radial-gradient(60% 70% at 45% 40%, rgba(207, 229, 237, 0.9), transparent 70%), radial-gradient(40% 50% at 0% 100%, rgba(239, 225, 218, 0.9), transparent 70%), var(--porcelain);
+}
+.mapa-stage { position: relative; overflow: hidden; }
+.mapa-stage canvas { width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s var(--ease); cursor: grab; }
+.mapa-stage canvas.is-ready { opacity: 1; }
+.mapa-stage canvas:active { cursor: grabbing; }
+
+.mapa-intro { position: absolute; left: var(--gutter); top: 28px; display: grid; gap: 10px; max-width: 340px; pointer-events: none; transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+.mapa-intro h1 { font-size: clamp(2.2rem, 3.6vw, 3.4rem); }
+.mapa-intro p:last-child { color: var(--muted); font-size: 0.92rem; }
+.mapa-intro.is-hidden { opacity: 0; transform: translateY(-10px); }
+
+.mapa-dots { position: absolute; inset: 0; pointer-events: none; }
+.mapa-dot { position: absolute; left: 0; top: 0; width: 0; height: 0; padding: 0; border: 0; background: none; pointer-events: auto; transition: opacity 0.3s; }
+.mapa-dot.is-hidden { opacity: 0; pointer-events: none; }
+.mapa-dot i { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: 1.5px solid var(--sea); box-shadow: 0 4px 12px -4px rgba(24, 47, 87, 0.5); transition: transform 0.3s var(--ease), background 0.3s; }
+.mapa-dot i::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--sea); transform: scale(0); transition: transform 0.3s var(--ease); }
+.mapa-dot span {
+  position: absolute; left: 16px; top: -14px; padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+  background: var(--glass); border: 1px solid var(--glass-border); box-shadow: var(--shadow-sm); font-size: 0.78rem; font-weight: 600; color: var(--navy);
+  opacity: 0; transform: translateX(-6px); transition: 0.3s var(--ease); pointer-events: none;
+}
+.mapa-dot:hover i, .mapa-dot:focus-visible i { transform: scale(1.25); }
+.mapa-dot:hover span, .mapa-dot:focus-visible span, .mapa-dot.is-active span { opacity: 1; transform: none; }
+.mapa-dot.has-sel i::after { transform: scale(1); }
+.mapa-dot.is-active i { background: var(--navy); border-color: var(--on-accent); transform: scale(1.3); }
+.mapa-dot.is-active i::after { background: var(--surface); transform: scale(0.6); }
+
+.mapa-tools { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: max-content; max-width: calc(100% - 24px); }
+.mapa-tools .seg { background: var(--glass); backdrop-filter: blur(10px); }
+.sim { display: flex; align-items: center; gap: 10px; padding: 0 16px; min-height: 48px; border-radius: 999px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--line); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.sim input { width: 150px; accent-color: var(--navy); }
+.mapa-sculpt { position: absolute; top: 24px; right: 24px; z-index: 2; background: var(--glass); backdrop-filter: blur(10px); }
+.mapa-sculpt button { min-height: 34px; padding: 0 13px; font-size: 0.82rem; white-space: nowrap; }
+.mapa-disclaimer { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-size: 0.72rem; color: var(--muted); padding: 0 16px; }
+.mapa-fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: 40px; text-align: center; color: var(--muted); }
+
+/* Panel */
+.mapa-panel { overflow-y: auto; padding: 22px 22px 40px; background: var(--glass); backdrop-filter: blur(18px); border-left: 1px solid var(--glass-border); box-shadow: -30px 0 60px -40px rgba(24, 47, 87, 0.35); display: grid; gap: 14px; align-content: start; }
+.panel-block { display: grid; gap: 12px; padding: 18px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.panel-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.zone-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.zone-chip { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 0.84rem; font-weight: 600; color: var(--ink); transition: 0.2s; }
+.zone-chip:hover { border-color: var(--navy); }
+.zone-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--sea); }
+.zone-chip.has-sel { background: var(--powder-100); border-color: transparent; }
+.zone-chip[aria-pressed='true'] { background: var(--navy); color: var(--on-accent); border-color: var(--navy); }
+.zone-chip[aria-pressed='true'] i { background: var(--powder); }
+
+.zone-empty { display: grid; justify-items: center; gap: 10px; padding: 14px 6px; text-align: center; color: var(--muted); font-size: 0.92rem; }
+.zone-empty svg { width: 34px; height: 34px; color: var(--sea); }
+.zone-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.zone-head h2 { font-size: 2.2rem; }
+.zone-head .link { border: 0; background: none; padding: 0; font-size: 0.82rem; }
+.concerns { display: grid; gap: 8px; }
+.concern { position: relative; display: flex; gap: 12px; padding: 14px; border-radius: 16px; border: 1px solid var(--line-strong); cursor: pointer; transition: 0.2s; }
+.concern:hover { border-color: var(--navy); }
+.concern input { position: absolute; opacity: 0; pointer-events: none; }
+.concern-box { display: grid; place-items: center; width: 22px; height: 22px; flex: none; margin-top: 1px; border-radius: 7px; border: 1.5px solid var(--line-strong); color: transparent; transition: 0.2s; }
+.concern-box svg { width: 14px; height: 14px; }
+.concern.is-on { background: var(--powder-100); border-color: var(--navy); }
+.concern.is-on .concern-box { background: var(--navy); border-color: var(--navy); color: var(--on-accent); }
+.concern input:focus-visible + .concern-box { outline: 2px solid var(--sea); outline-offset: 2px; }
+.concern-body { display: grid; gap: 6px; }
+.concern-body b { font-weight: 600; font-size: 0.94rem; line-height: 1.35; }
+.concern-body small { font-size: 0.8rem; color: var(--muted); }
+.concern-trs, .plan-trs { display: flex; flex-wrap: wrap; gap: 5px; }
+.tr-pill { display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--porcelain); font-size: 0.78rem; font-weight: 600; color: var(--navy); }
+.tr-pill small { font-weight: 500; color: var(--muted); font-size: 0.72rem; }
+.plan { background: linear-gradient(160deg, var(--surface), var(--powder-100)); }
+.plan-items { display: grid; gap: 6px; }
+.plan-items li { display: flex; align-items: center; gap: 8px; padding: 9px 10px 9px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 0.86rem; }
+.plan-items li span { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sea); flex: none; }
+.plan-items button { margin-left: auto; display: grid; place-items: center; width: 26px; height: 26px; flex: none; border: 0; border-radius: 50%; background: var(--porcelain); color: var(--muted); }
+.plan-items button svg { width: 14px; height: 14px; }
+.plan-cta { display: grid; gap: 8px; margin-top: 4px; }
+
+@media (max-width: 900px) {
+  .mapa { grid-template-columns: 1fr; grid-template-rows: auto auto; height: auto; min-height: 100dvh; }
+  .mapa-stage { height: 68svh; min-height: 460px; }
+  .mapa-intro { top: 12px; gap: 4px; }
+  .mapa-intro .eyebrow { display: none; }
+  .mapa-intro h1 { font-size: 1.7rem; }
+  .mapa-sculpt { top: 54px; right: 50%; transform: translateX(50%); }
+  .mapa-sculpt button { min-height: 30px; padding: 0 10px; font-size: 0.76rem; }
+  .mapa-intro p:last-child { display: none; }
+  .mapa-tools { bottom: 62px; }
+  .mapa-disclaimer { bottom: 6px; font-size: 0.64rem; line-height: 1.35; }
+  .sim input { width: 110px; }
+  .mapa-panel { border-left: 0; border-top: 1px solid var(--glass-border); padding: 16px 16px 40px; border-radius: 26px 26px 0 0; margin-top: -18px; position: relative; z-index: 2; }
+}
+@media (max-width: 480px) { .mapa-tools .seg button { padding: 0 11px; } .sim { padding: 0 12px; } }
