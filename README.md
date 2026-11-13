@@ -2,6 +2,14 @@
 
 Maqueta funcional para Medesthetique (medicina estética, Samborondón y Ceibos, Guayaquil). Incluye un sitio público con esculturas clásicas en 3D (David, Venus de Milo y Afrodita, intercambiables), un mapa facial 3D interactivo con plan sugerido y simulación de antes y después, una agenda en línea y un panel para la clínica. Todo en estilo glassmorphism, con tema claro y oscuro.
 
+## Demo en línea
+
+- Sitio: https://aurelioochoa.github.io/medesthetique/
+- Mapa facial 3D: https://aurelioochoa.github.io/medesthetique/mapa.html
+- Panel de la clínica: https://aurelioochoa.github.io/medesthetique/admin.html (acceso de demostración)
+
+Los cambios hechos en el panel de la demo solo se guardan en el navegador de quien lo usa: no afectan lo que ven los demás.
+
 No tiene backend. Todo corre en el navegador y los datos se guardan en `localStorage`, por eso funciona tal cual en GitHub Pages.
 
 ## Qué incluye
